@@ -11,6 +11,7 @@ const envSchema = joi.object().keys({
         .string()
         .valid('development', 'production').required(),
     PORT: joi.number().positive().required(),
+    ORIGIN: joi.string().uri().required(),
 })
 .unknown()
 
@@ -21,6 +22,6 @@ if (error){
     
 }
 
-export default {nodeEnv: env.NODE_ENV, port: env.PORT}
+export default {nodeEnv: env.NODE_ENV, port: env.PORT, origin: env.ORIGIN }
 
 
