@@ -1,16 +1,17 @@
 import { Router } from "express"
 import {getTodos, getTodo, addTodos, updateTodo} from '../../utils/todos'
 import {NETWORK_AUTHENTICATION_REQUIRED, StatusCodes} from 'http-status-codes'
+import { any, array } from "joi"
 
 const router=Router()
 
-router.get('/', (req,res) =>{
-    const Todos = getTodos(req.query.completed)
+router.get('/', async (req,res) =>{
+    const Todos = await getTodos(req.query.completed)
     res.send(Todos)
 })
 
-router.get('/:id', (req, res, next) => {
-    const todo = getTodo(req.params.id)
+router.get('/:id', async (req, res, next) => {
+    const todo =  await getTodo(req.params.id)
     if (todo){
         res.send(todo)
     } else {
@@ -19,9 +20,9 @@ router.get('/:id', (req, res, next) => {
     }
 })
 
-router.post('/', (req,res,next)=> {
+router.post('/', async (req,res,next)=> {
     const todo = req.body
-    const response = addTodos(todo)
+    const response =  await addTodos(todo)
     if (response.error){
         res.status(StatusCodes.BAD_REQUEST)
         next(response.error)
@@ -32,9 +33,9 @@ router.post('/', (req,res,next)=> {
         
 })
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id',  async(req, res, next) => {
     const todo = req.body  
-    const response = updateTodo(req.params.id, todo)
+    const response =  await updateTodo(req.params.id, todo)
 
     if (response.error){
         res.status(StatusCodes.BAD_REQUEST)
