@@ -1,49 +1,49 @@
-import { Router } from "express"
-import {getTodos, getTodo, addTodos, updateTodo} from '../../utils/todos'
-import {NETWORK_AUTHENTICATION_REQUIRED, StatusCodes} from 'http-status-codes'
-import { any, array } from "joi"
+import { Router } from 'express'
+import { StatusCodes } from 'http-status-codes'
 
-const router=Router()
+import { getTodos, getTodo, addTodo, updateTodo } from '../../utils/todos'
 
-router.get('/', async (req,res) =>{
-    const Todos = await getTodos(req.query.completed)
-    res.send(Todos)
+const router = Router()
+
+router.get('/', async (req, res) => {
+  const todos = await getTodos(req.query.completed)
+  res.send(todos)
 })
 
 router.get('/:id', async (req, res, next) => {
-    const todo =  await getTodo(req.params.id)
-    if (todo){
-        res.send(todo)
-    } else {
-        res.status(StatusCodes.NOT_FOUND)
-        next(new Error('Not found'))
-    }
+  const todo = await getTodo(req.params.id)
+  if (todo) {
+    res.send(todo)
+  } else {
+    res.status(StatusCodes.NOT_FOUND)
+    next(new Error(`Not Found To do with ID: ${req.params.id}`))
+  }
 })
 
-router.post('/', async (req,res,next)=> {
-    const todo = req.body
-    const response =  await addTodos(todo)
-    if (response.error){
-        res.status(StatusCodes.BAD_REQUEST)
-        next(response.error)
-    } else{
-        res.status(StatusCodes.CREATED)
-        res.send(response.newTodo)
-    }
-        
+router.post('/', async (req, res, next) => {
+  const todo = req.body
+  const response = await addTodo(todo)
+
+  if (response.error) {
+    res.status(StatusCodes.BAD_REQUEST)
+    next(response.error)
+  } else {
+    res.status(StatusCodes.CREATED)
+    res.send(response.newTodo)
+  }
 })
 
-router.put('/:id',  async(req, res, next) => {
-    const todo = req.body  
-    const response =  await updateTodo(req.params.id, todo)
+router.put('/:id', async (req, res, next) => {
+  const todo = req.body
+  const response = await updateTodo(req.params.id, todo)
 
-    if (response.error){
-        res.status(StatusCodes.BAD_REQUEST)
-        next(response.error)
-    } else {
-        res.status(StatusCodes.OK)
-        res.send(response.updateTodo)
-    }
+  if (response.error) {
+    res.status(StatusCodes.BAD_REQUEST)
+    next(response.error)
+  } else {
+    res.status(StatusCodes.OK)
+    res.send(response.updatedTodo)
+  }
 })
 
 export default router

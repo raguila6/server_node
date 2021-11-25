@@ -1,9 +1,7 @@
-import morgan from "morgan"
-
-import consola, { Consola } from 'consola'
+import morgan from 'morgan'
+import consola from 'consola'
 
 const middleware = morgan('dev')
 const log = consola
 
-export default {middleware, log}
-
+export default { middleware, log }
